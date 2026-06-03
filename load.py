@@ -17,5 +17,3 @@ def load_to_postgres(df):
         if_exists ="append",
         index = False
     )
-
-    print("Data loaded successfully")
