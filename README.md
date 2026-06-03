@@ -59,8 +59,8 @@ weather_etl/
 ### Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd weather_etl
+git clone https://github.com/itachishiva69/weather_ETL.git
+cd weather_ETL
 ```
 
 ### Create a Virtual Environment
