@@ -1,25 +1,47 @@
-# Weather ETL Pipeline
+# Weather ETL Dashboard
 
 ## Overview
 
-This project is a basic ETL (Extract, Transform, Load) pipeline built with Python and the OpenWeatherMap API.
+Weather ETL Dashboard is a beginner-friendly Data Engineering project built with Python, PostgreSQL, and Streamlit.
 
-The pipeline retrieves weather data for a city, transforms the raw API response into a structured format, and loads the result into a PostgreSQL database.
+The application allows users to enter a city name, fetch real-time weather data from the OpenWeatherMap API, transform the data into a structured format, store it in PostgreSQL, and visualize historical weather records through an interactive Streamlit dashboard.
 
-This project was created to learn the fundamentals of Data Engineering and ETL workflows.
+The project follows the ETL (Extract, Transform, Load) process and includes logging and error handling.
 
 ---
 
-## ETL Flow
+## Features
+
+* Extract weather data from OpenWeatherMap API
+* Transform JSON data into a structured format
+* Load data into PostgreSQL
+* Interactive Streamlit dashboard
+* Real-time weather data collection
+* Historical weather data storage
+* Temperature trend visualization
+* Humidity trend visualization
+* Application logging
+* Error handling for invalid city names and API failures
+* Environment variable management using `.env`
+
+---
+
+## ETL Workflow
 
 ```text
-Weather API
-    ↓
-Extract
-    ↓
-Transform
-    ↓
-Load to PostgreSQL
+User Input (City Name)
+           ↓
+     Streamlit UI
+           ↓
+      Extract Data
+           ↓
+     Transform Data
+           ↓
+    Load to PostgreSQL
+           ↓
+ Display Dashboard
+           ↓
+ Logging & Monitoring
 ```
 
 ---
@@ -30,13 +52,19 @@ Load to PostgreSQL
 weather_etl/
 
 │
+├── logs/
+│   └── pipeline.log
+│
 ├── .env
 ├── config.py
+├── logger.py
 ├── extract.py
 ├── transform.py
 ├── load.py
 ├── pipeline.py
+├── app.py
 ├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
@@ -45,10 +73,11 @@ weather_etl/
 ## Technologies Used
 
 * Python
-* Requests
-* Pandas
+* Streamlit
 * PostgreSQL
 * SQLAlchemy
+* Pandas
+* Requests
 * Python Dotenv
 * OpenWeatherMap API
 
@@ -60,57 +89,49 @@ weather_etl/
 
 ```bash
 git clone https://github.com/itachishiva69/weather_ETL.git
-cd weather_ETL
+cd weather_etl
 ```
 
 ### Create a Virtual Environment
 
 ```bash
-python -m venv venv
+python -m venv myenv
 ```
 
 ### Activate the Virtual Environment
 
-**Windows**
+Windows:
 
 ```bash
-venv\Scripts\activate
+myenv\Scripts\activate
 ```
 
-**Linux/Mac**
+Linux/Mac:
 
 ```bash
-source venv/bin/activate
+source myenv/bin/activate
 ```
 
 ### Install Dependencies
 
 ```bash
-pip install requests pandas python-dotenv sqlalchemy psycopg2-binary
-```
-
-### Save Dependencies
-
-```bash
-pip freeze > requirements.txt
+pip install -r requirements.txt
 ```
 
 ---
 
 ## Weather API Setup
 
-This project uses the OpenWeatherMap API to retrieve weather data.
-
 ### Create an OpenWeatherMap Account
 
-1. Visit OpenWeatherMap.
+1. Visit https://openweathermap.org/api
 2. Create a free account.
 3. Verify your email address.
 4. Log in to your account.
 
 ### Generate an API Key
 
-1. Open the API Keys section.
+1. Navigate to the API Keys section.
 2. Create a new API key.
 3. Copy the generated API key.
 
@@ -120,39 +141,52 @@ Example:
 1234567890abcdef1234567890abcdef
 ```
 
-**Note:** Newly created API keys may take a few minutes to become active.
+**Note:** New API keys may take a few minutes to become active.
 
 ---
 
 ## PostgreSQL Database Setup
 
-Before running the pipeline, create the PostgreSQL database.
+Before running the application, PostgreSQL must be installed and running on your system.
 
-### Connect to PostgreSQL
+Connect to PostgreSQL:
 
 ```bash
 psql -U postgres
 ```
 
-### Create the Database
+Create the database:
 
 ```sql
 CREATE DATABASE weather_db;
 ```
 
-### Verify the Database Exists
+Verify the database exists:
 
 ```sql
 \l
 ```
 
-### Connect to the Database
+Connect to the database:
 
 ```sql
 \c weather_db
 ```
 
-The ETL pipeline will automatically create the `weather_data` table when it runs for the first time.
+### Important Note
+
+The application **does not create the PostgreSQL database automatically**.
+
+You must manually create the `weather_db` database before running the application.
+
+The application **does automatically create the `weather_data` table** when weather data is inserted for the first time.
+
+| Component           | Created Automatically |
+| ------------------- | --------------------- |
+| PostgreSQL Server   | No                    |
+| weather_db Database | No                    |
+| weather_data Table  | Yes                   |
+| Weather Records     | Yes                   |
 
 ---
 
@@ -170,110 +204,145 @@ DB_USER=postgres
 DB_PASSWORD=your_password
 ```
 
-Replace:
-
-* `your_api_key_here` with your OpenWeatherMap API key.
-* `your_password` with your PostgreSQL password.
+Replace the values with your own credentials.
 
 ---
 
-## Pipeline Components
+## Running the Application
 
-### Extract
-
-Retrieves weather data from the OpenWeatherMap API.
-
-Example fields collected:
-
-* City Name
-* Temperature
-* Humidity
-* Weather Condition
-* Wind Speed
-
----
-
-### Transform
-
-Processes the raw JSON response and converts it into a structured Pandas DataFrame.
-
-Example output:
-
-| city      | temperature | humidity | weather |
-| --------- | ----------- | -------- | ------- |
-| Hyderabad | 32          | 60       | Clouds  |
-
----
-
-### Load
-
-Loads the transformed data into PostgreSQL.
-
-Table Name:
-
-```sql
-weather_data
-```
-
-The table is automatically created if it does not already exist.
-
----
-
-## Running the Pipeline
-
-Run the pipeline:
+Start the Streamlit application:
 
 ```bash
-python pipeline.py
+streamlit run app.py
+```
+
+Streamlit will start a local server and open the dashboard in your browser.
+
+Example:
+
+```text
+Local URL: http://localhost:8501
 ```
 
 ---
 
-## Expected Result
+## Using the Application
 
-After successful execution:
+1. Enter a city name.
+2. Click **Fetch Weather**.
+3. The application will:
 
-* Weather data is fetched from the API.
-* Data is transformed into a structured format.
-* PostgreSQL table `weather_data` is created automatically.
-* Weather records are inserted into the database.
+   * Fetch weather data from OpenWeatherMap.
+   * Transform the API response.
+   * Store the data in PostgreSQL.
+   * Update the dashboard automatically.
+4. View:
 
-Verify the data:
+   * Weather records table
+   * Latest weather metrics
+   * Temperature history chart
+   * Humidity history chart
 
-```sql
-SELECT * FROM weather_data;
+---
+
+## Database Schema
+
+After the `weather_db` database has been created manually, the application automatically creates the `weather_data` table when the first weather record is inserted.
+
+Table: `weather_data`
+
+| Column      | Type      |
+| ----------- | --------- |
+| city        | VARCHAR   |
+| temperature | FLOAT     |
+| humidity    | INTEGER   |
+| weather     | VARCHAR   |
+| wind_speed  | FLOAT     |
+| timestamp   | TIMESTAMP |
+
+---
+
+## Logging
+
+Application logs are stored in:
+
+```text
+logs/pipeline.log
+```
+
+Example:
+
+```text
+2026-06-03 16:30:00 | INFO | Pipeline started for Hyderabad
+2026-06-03 16:30:01 | INFO | Weather data fetched for Hyderabad
+2026-06-03 16:30:02 | INFO | Data loaded successfully
 ```
 
 ---
 
-## Learning Outcomes
+## Error Handling
 
-By building this project, you will learn:
+The application handles:
 
-* ETL Fundamentals
-* REST API Integration
-* JSON Processing
-* Data Transformation
-* Pandas DataFrames
-* PostgreSQL Integration
-* Environment Variables
-* Python Project Organization
+* Invalid city names
+* Network connection issues
+* API request failures
+* Database insertion failures
+* Empty city input
+
+Example:
+
+```text
+City 'asdfghjkl' not found
+```
 
 ---
 
 ## Future Improvements
 
-* Add logging
-* Add exception handling
-* Support multiple cities
-* Export data to CSV
-* Schedule automatic execution
-* Dockerize the application
-* Integrate Apache Airflow
-* Deploy to the cloud
+* Scheduled weather collection
+* Docker support
+* Airflow orchestration
+* Cloud deployment
+* Weather forecasting endpoints
+* User authentication
+* Multiple weather providers
+* Data quality validation
+
+---
+
+## Learning Outcomes
+
+This project demonstrates:
+
+* ETL Fundamentals
+* REST API Integration
+* Data Transformation
+* PostgreSQL Integration
+* Streamlit Dashboard Development
+* Logging
+* Error Handling
+* Environment Variable Management
+* Data Visualization
 
 ---
 
 ## Author
 
-Weather ETL Pipeline built as a beginner Data Engineering project using Python, PostgreSQL, and the OpenWeatherMap API.
+Built as a hands-on Data Engineering project for learning ETL pipelines, PostgreSQL integration, and dashboard development using Streamlit.
+
+---
+
+## .gitignore
+
+Create a `.gitignore` file to prevent sensitive or unnecessary files from being uploaded to GitHub.
+
+```gitignore
+myenv/
+.env
+__pycache__/
+*.pyc
+logs/
+.vscode/
+.idea/
+```

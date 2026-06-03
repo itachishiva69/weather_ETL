@@ -1,8 +1,12 @@
 from config import DB_CONFIG
 from sqlalchemy import create_engine
-
+from logger import logger
 
 def load_to_postgres(df):
+
+    logger.info(
+        "Loading data int PostgreSQL"
+    )
 
     connection_string = (
         f"postgresql://{DB_CONFIG['user']}:{DB_CONFIG['password']}"
@@ -16,4 +20,8 @@ def load_to_postgres(df):
         con = engine,
         if_exists ="append",
         index = False
+    )
+
+    logger.info(
+        "Data loaded successfully"
     )

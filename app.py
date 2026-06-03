@@ -16,6 +16,11 @@ engine = create_engine(
     f"{os.getenv('DB_NAME')}"
 )
 
+st.set_page_config(
+    page_title="Weather ETL Dashboard",
+    layout="wide"
+)
+
 st.title("Weather ETL Dashboard")
 
 city = st.text_input(
@@ -25,11 +30,35 @@ city = st.text_input(
 
 if st.button("Fetch Weather"):
 
-    pipeline(city)
+    if city.strip() == "":
 
-    st.success(
-        f"Weather data for {city} loaded successfully!"
-    )
+        st.warning(
+            "Please enter a city name."
+        )
+
+    else:
+
+        try:
+
+            pipeline(city)
+
+            st.success(
+                f"Weather data loaded for {city}"
+            )
+
+            st.rerun()
+
+        except ValueError as e:
+
+            st.warning(str(e))
+
+        except Exception as e:
+
+            st.error(
+                "Something went wrong while fetching weather data."
+            )
+
+            st.write(str(e))
 
 try:
 
@@ -42,17 +71,20 @@ try:
         engine
     )
 
-    st.subheader("Weather Data")
-
-    st.dataframe(df)
-
     if not df.empty:
+
+        st.subheader("Weather Records")
+
+        st.dataframe(
+            df,
+            use_container_width=True
+        )
 
         latest = df.iloc[0]
 
-        st.subheader("Latest Record")
+        st.subheader("Latest Weather")
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
 
         with col1:
             st.metric(
@@ -72,16 +104,36 @@ try:
                 f"{latest['humidity']} %"
             )
 
-        st.subheader("Temperature History")
+        with col4:
+            st.metric(
+                "Weather",
+                latest["weather"]
+            )
 
-        st.line_chart(
-            df.set_index("timestamp")["temperature"]
+        st.subheader(
+            "Temperature History"
         )
 
-        st.subheader("Humidity History")
+        st.line_chart(
+            df.set_index("timestamp")[
+                "temperature"
+            ]
+        )
+
+        st.subheader(
+            "Humidity History"
+        )
 
         st.bar_chart(
-            df.set_index("timestamp")["humidity"]
+            df.set_index("timestamp")[
+                "humidity"
+            ]
+        )
+
+    else:
+
+        st.info(
+            "No weather data available."
         )
 
 except Exception:
