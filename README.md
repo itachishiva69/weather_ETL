@@ -89,6 +89,8 @@ weather_etl/
 
 ```bash
 git clone https://github.com/itachishiva69/weather_ETL.git
+cd weather_ETL
+git clone https://github.com/itachishiva69/weather_ETL.git
 cd weather_etl
 ```
 
