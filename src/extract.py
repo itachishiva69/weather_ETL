@@ -1,6 +1,6 @@
 import requests
-from config import API_KEY
-from logger import logger
+from src.config import API_KEY
+from src.logger import logger
 
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 

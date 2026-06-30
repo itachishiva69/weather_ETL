@@ -1,7 +1,7 @@
-from extract import extract_weather
-from transform import transform_weather
-from load import load_to_postgres
-from logger import logger
+from src.extract import extract_weather
+from src.transform import transform_weather
+from src.load import load_to_postgres
+from src.logger import logger
 
 
 def pipeline(city):

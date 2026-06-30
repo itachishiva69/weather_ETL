@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime
-from logger import logger
+from src.logger import logger
 
 
 def transform_weather(data):

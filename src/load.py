@@ -1,6 +1,6 @@
-from config import DB_CONFIG
+from src.config import DB_CONFIG
 from sqlalchemy import create_engine
-from logger import logger
+from src.logger import logger
 
 def load_to_postgres(df):
 
